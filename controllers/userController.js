@@ -2,18 +2,19 @@ const { User, Student } = require('../models');
 
 module.exports = {
   // Get all users
-  async getCourses(req, res) {
+  async getusers(req, res) {
     try {
-      const users = await user.find();
+      const users = await user.findAll();
       res.json(users);
     } catch (err) {
       res.status(500).json(err);
     }
   },
-  // Get a user
-  async getSingleCourse(req, res) {
+
+  // Get a single user
+  async getSingleUser(req, res) {
     try {
-      const user = await User.findOne({ _id: req.params.courseId })
+      const user = await User.findOne({ _id: req.params.userId })
         .select('-__v');
 
       if (!user) {
@@ -25,8 +26,10 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+
+
   // Create a user
-  async createCourse(req, res) {
+  async createUser(req, res) {
   // example data
   // {
   //   "username": "lernantino",
@@ -41,10 +44,11 @@ module.exports = {
       return res.status(500).json(err);
     }
   },
+
   // Delete a user
-  async deleteCourse(req, res) {
+  async deleteUser(req, res) {
     try {
-      const user = await User.findOneAndDelete({ _id: req.params.courseId });
+      const user = await User.findOneAndDelete({ _id: req.params.userId });
 
       if (!user) {
         res.status(404).json({ message: 'No user with that ID' });
@@ -56,11 +60,17 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+
   // Update a user
-  async updateCourse(req, res) {
+  async updateUser(req, res) {
+      // example data
+  // {
+  //   "username": "lernantino",
+  //   "email": "lernantino@gmail.com"
+  // }
     try {
       const user = await User.findOneAndUpdate(
-        { _id: req.params.courseId },
+        { id: req.params.userId },
         { $set: req.body },
         { runValidators: true, new: true }
       );
