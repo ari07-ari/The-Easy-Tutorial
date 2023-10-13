@@ -1,12 +1,12 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 
-// Schema to create Student model
+// Schema to create reaction model
 const reactionSchema = new Schema(
   {
     reactionId: {
       type: Schema.Types.ObjectId,
       default: ()=>{
-          return new Schema.Types.ObjectId()
+          return new Types.ObjectId()
       }
     },
     reactionBody: {

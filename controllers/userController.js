@@ -4,9 +4,10 @@ module.exports = {
   // Get all users
   async getusers(req, res) {
     try {
-      const users = await user.findAll();
+      const users = await User.find();
       res.json(users);
     } catch (err) {
+      console.log(err)
       res.status(500).json(err);
     }
   },
@@ -45,6 +46,24 @@ module.exports = {
     }
   },
 
+    // Create a Friend
+    async createFriend(req, res) {
+      // example data
+      // {
+      //   "username": "marisol03",
+      //   "email": "marisol@gmail.com"
+      // }
+    
+        try {
+          const user = await User.findOneAndUpdate({_id: req.params.userId }, 
+            {$addToSet: {friends: req.params.friendId}}, {new:true});
+          res.json(user);
+        } catch (err) {
+          console.log(err);
+          return res.status(500).json(err);
+        }
+      },
+
   // Delete a user
   async deleteUser(req, res) {
     try {
@@ -53,13 +72,28 @@ module.exports = {
       if (!user) {
         res.status(404).json({ message: 'No user with that ID' });
       }
-
-      await Student.deleteMany({ _id: { $in: user.students } });
-      res.json({ message: 'user and thoughts deleted!' });
+      res.json({ message: 'user deleted!' });
     } catch (err) {
       res.status(500).json(err);
     }
   },
+
+    // Delete a friend
+    async deletefriend(req, res) {
+      try {
+        const user = await User.findOneAndDelete({_id: req.params.userId }, 
+          {$pull: {friends: req.params.friendId}}, {new:true});
+  
+        if (!user) {
+          res.status(404).json({ message: 'No friend with that ID' });
+        }
+  
+     
+        res.json({ message: 'friend deleted!' });
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    },
 
   // Update a user
   async updateUser(req, res) {
@@ -70,7 +104,7 @@ module.exports = {
   // }
     try {
       const user = await User.findOneAndUpdate(
-        { id: req.params.userId },
+        { _id: req.params.userId },
         { $set: req.body },
         { runValidators: true, new: true }
       );
@@ -78,9 +112,10 @@ module.exports = {
       if (!user) {
         res.status(404).json({ message: 'No user with this id!' });
       }
-
-      res.json(user);
-    } catch (err) {
+      else{
+      res.json(user);}
+    } 
+    catch (err) {
       res.status(500).json(err);
     }
   },
